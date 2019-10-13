@@ -42,6 +42,7 @@ public class CategoryActivity extends AppCompatActivity {
         editCategoryValue = findViewById(R.id.edit_category_value);
         editCategoryColor = findViewById(R.id.edit_category_color);
         Button completeButton = findViewById(R.id.category_complete_button);
+        final Button deleteButton = findViewById(R.id.category_delete_button);
 
         id = getIntent().getIntExtra("id", -1);
 
@@ -91,5 +92,17 @@ public class CategoryActivity extends AppCompatActivity {
                 }
             }
         });
+
+        if(id != -1) {
+            deleteButton.setVisibility(View.VISIBLE);
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    database.delete(DBHelper.TABLE_CATEGORY, DBHelper.KEY_ID + "=" + id, null);
+                    finishAffinity();
+                    startActivity(new Intent(CategoryActivity.this, MainActivity.class));
+                }
+            });
+        }
     }
 }

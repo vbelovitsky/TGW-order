@@ -8,5 +8,6 @@
     <color name="colorDarkGreen">#3A6D02</color>
     <color name="colorLightRed">#FF7474</color>
 
+    <color name="colorWhite">#FFFFFF</color>
     <color name="colorTest">#FF7474</color>
 </resources>
