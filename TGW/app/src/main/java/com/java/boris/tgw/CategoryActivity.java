@@ -1,6 +1,10 @@
 package com.java.boris.tgw;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.ContentValues;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,25 +19,35 @@ public class CategoryActivity extends AppCompatActivity {
 
     private boolean isColorChanged = false;
     private int id;
+    private DBHelper dbHelper;
+    private SQLiteDatabase database;
+
+
+    private EditText editCategoryName;
+    private SeekBar editCategoryValue;
+    private ColorSeekBar editCategoryColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
 
+        // Инициалицазия переменных для работы с бд
+        dbHelper = new DBHelper(this);
+        database = dbHelper.getWritableDatabase();
+
         //Инициалицируем элементы интерфейса
         TextView categoryLabel = findViewById(R.id.category_label);
-        EditText editCategoryName = findViewById(R.id.edit_category_name);
-        SeekBar editCategoryValue = findViewById(R.id.edit_category_value);
-        ColorSeekBar editCategoryColor = findViewById(R.id.edit_category_color);
+        editCategoryName = findViewById(R.id.edit_category_name);
+        editCategoryValue = findViewById(R.id.edit_category_value);
+        editCategoryColor = findViewById(R.id.edit_category_color);
         Button completeButton = findViewById(R.id.category_complete_button);
 
         id = getIntent().getIntExtra("id", -1);
 
-
-        categoryLabel.setText(id == -1?"Создайте категорию:":"Измените категорию:");
-        editCategoryName.setText(id == -1?"":getIntent().getStringExtra("xName"));
-        editCategoryValue.setProgress(id == -1?0:getIntent().getIntExtra("value", 1) - 1);
+        categoryLabel.setText(id == -1 ? "Создайте категорию:" : "Измените категорию:");
+        editCategoryName.setText(id == -1 ? "" : getIntent().getStringExtra("xName"));
+        editCategoryValue.setProgress(id == -1 ? 0 : getIntent().getIntExtra("value", 1) - 1);
 
         editCategoryColor.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
             @Override
@@ -45,11 +59,35 @@ public class CategoryActivity extends AppCompatActivity {
         completeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Добавляем новую/измененную категорию в бд
-                if(id == -1){
 
-                }else{
+                ContentValues contentValues = new ContentValues();
 
+                // Валидация ввода
+                if (editCategoryName.length() == 0) {
+                    editCategoryName.setError("Введите, пожалуйста, название!");
+                } else if (editCategoryName.getText().toString().contains("@")) {
+                    editCategoryName.setError("Недопустимый символ @");
+                } else {
+                    //Добавление новой/измененной категории в бд
+                    if (id == -1) {
+                        contentValues.put(DBHelper.KEY_NAME, editCategoryName.getText().toString());
+                        contentValues.put(DBHelper.KEY_VALUE, editCategoryValue.getProgress() + 1);
+                        contentValues.put(DBHelper.KEY_COLOR, String.format("#%06X", (0xFFFFFF & editCategoryColor.getColor())));
+
+                        database.insert(DBHelper.TABLE_CATEGORY, null, contentValues);
+                        finishAffinity();
+                        startActivity(new Intent(CategoryActivity.this, MainActivity.class));
+                    } else {
+                        contentValues.put(DBHelper.KEY_NAME, editCategoryName.getText().toString());
+                        contentValues.put(DBHelper.KEY_VALUE, editCategoryValue.getProgress() + 1);
+
+                        if (isColorChanged)
+                            contentValues.put(DBHelper.KEY_COLOR, String.format("#%06X", (0xFFFFFF & editCategoryColor.getColor())));
+
+                        database.update(DBHelper.TABLE_CATEGORY, contentValues, DBHelper.KEY_ID + "=?", new String[]{Integer.toString(id)});
+                        finishAffinity();
+                        startActivity(new Intent(CategoryActivity.this, MainActivity.class));
+                    }
                 }
             }
         });

@@ -6,5 +6,7 @@
     <color name="colorAccent">#FF8903</color>
     <color name="colorLightGreen">#93E92B</color>
     <color name="colorDarkGreen">#3A6D02</color>
-    <color name="colorTest">#FFEB3B</color>
+    <color name="colorLightRed">#FF7474</color>
+
+    <color name="colorTest">#FF7474</color>
 </resources>

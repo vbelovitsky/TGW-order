@@ -83,5 +83,20 @@
         android:textSize="30dp"
         android:textColor="@color/colorPrimaryDark"/>
 
+    <ImageButton
+        android:id="@+id/category_delete_button"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/colorLightRed"
+        android:padding="5dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/icon_delete"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/category_complete_button"
+        app:layout_constraintTop_toBottomOf="@+id/edit_category_color" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

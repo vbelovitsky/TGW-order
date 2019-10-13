@@ -38,6 +38,8 @@ public class MainFragment extends Fragment {
     private Polar polar;
     private DBHelper dbHelper;
     private String LOG_TAG = "dbLog";
+    private int categoryCount = 5;
+    private boolean isReturnedFromCategories = false;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -45,28 +47,30 @@ public class MainFragment extends Fragment {
 
         getActivity().setTitle(R.string.menu_main);
 
+        // Инициализируем переменные для работы с бд
         dbHelper = new DBHelper(getActivity());
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-//        Cursor cursor;
-//        cursor = database.query(DBHelper.TABLE_CATEGORY, null, null, null, null, null, null);
-//        logCursor(cursor);
-//        cursor.close();
-//
-//        dbHelper.close();
+        // Достаем данные из бд и сразу вызываем метод создания колеса
+        ArrayList<String> dataLines = extractData(database);
+        categoryCount = dataLines.size();
+        setPolarChart(dataLines);
 
-        setPolarChart(database);
-
+        // Обработчик нажатия на кнопку добавления категории
         FloatingActionButton addCategoryButton = getActivity().findViewById(R.id.add_category_button);
         addCategoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), CategoryActivity.class);
-                intent.putExtra("id", -1);
-                startActivity(intent);
+                if(categoryCount <= 10) {
+                    Intent intent = new Intent(getActivity(), CategoryActivity.class);
+                    intent.putExtra("id", -1);
+                    isReturnedFromCategories = true;
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getActivity(), "Может быть не более 10 категорий", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-
     }
 
     @Override
@@ -74,6 +78,20 @@ public class MainFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
+    private ArrayList<String> extractData(SQLiteDatabase database){
+        ArrayList<String> dataLines = new ArrayList<>();
+
+        Cursor cursor;
+        cursor = database.query(DBHelper.TABLE_CATEGORY, null, null, null, null, null, null);
+
+        // Данные в массиве обновляются по ссылке
+        logCursor(cursor, dataLines);
+
+        cursor.close();
+        dbHelper.close();
+
+        return  dataLines;
+    }
 
     private void logCursor(Cursor cursor, ArrayList<String> _dataLines){
         if (cursor != null) {
@@ -82,7 +100,7 @@ public class MainFragment extends Fragment {
                 do {
                     stringBuilder.setLength(0);
                     for (String cn : cursor.getColumnNames()) {
-                        stringBuilder.append(cursor.getString(cursor.getColumnIndex(cn))).append(" ");
+                        stringBuilder.append(cursor.getString(cursor.getColumnIndex(cn))).append("@");
                     }
                     Log.d(LOG_TAG, stringBuilder.toString());
                     _dataLines.add(stringBuilder.toString());
@@ -91,33 +109,19 @@ public class MainFragment extends Fragment {
         } else Log.d(LOG_TAG, "Cursor is null");
     }
 
-
-    private void setPolarChart(SQLiteDatabase database){
+    private void setPolarChart(ArrayList<String> dataLines){
         AnyChartView anyChartView = getActivity().findViewById(R.id.any_chart_fragment);
 
         polar = AnyChart.polar();
 
-
-//        createSeries(new CustomDataEntry("Здоровье", 9, "green", 1));
-//        createSeries(new CustomDataEntry("Учеба", 6, "blue", 2));
-//        createSeries(new CustomDataEntry("Отношения", 5, "pink", 3));
-//        createSeries(new CustomDataEntry("Работа", 7, "gray", 4));
-//        createSeries(new CustomDataEntry("Хобби", 10, "yellow", 5));
-
-        Cursor cursor;
-        cursor = database.query(DBHelper.TABLE_CATEGORY, null, null, null, null, null, null);
-
-        ArrayList<String> dataLines = new ArrayList<>();
-        logCursor(cursor, dataLines);
+        // Заполняем колесо информацией
         for(int i = 0; i < dataLines.size(); i++){
-            String[] dataLine = dataLines.get(i).split(" ");
+            String[] dataLine = dataLines.get(i).split("@");
             createSeries(new CustomDataEntry(Integer.parseInt(dataLine[0]),
                     dataLine[1], Integer.parseInt(dataLine[2]), dataLine[3]));
         }
 
-        cursor.close();
-        dbHelper.close();
-
+        // Настройка внешнего вида колеса
         polar.yGrid(false);
         polar.yScale()
                 .maximum(10)
@@ -127,11 +131,11 @@ public class MainFragment extends Fragment {
                 .xScale(ScaleTypes.ORDINAL);
         anyChartView.setChart(polar);
 
+        // Обработчик нажатия на категорию
         polar.setOnClickListener(new ListenersInterface.OnClickListener(new String[]{"x", "value", "color", "id"}) {
             boolean isAble = true;
             @Override
             public void onClick(Event event) {
-
 
                 String x =  event.getData().get("x");
                 Integer value = Integer.parseInt(event.getData().get("value"));
@@ -143,6 +147,7 @@ public class MainFragment extends Fragment {
                     intent.putExtra("id", id);
                     intent.putExtra("xName", x);
                     intent.putExtra("value", value);
+                    isReturnedFromCategories = true;
                     startActivity(intent);
                 }
                 isAble = !isAble;
@@ -165,6 +170,6 @@ public class MainFragment extends Fragment {
 
         Column series = polar.column(data);
         series.color((String) dataEntry.getValue("color"));
-        series.pointWidth("99%");
+        series.pointWidth("100%");
     }
 }
