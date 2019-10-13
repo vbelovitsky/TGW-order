@@ -25,7 +25,7 @@
         android:layout_marginTop="88dp"
         android:hint="Введите название категории"
         app:layout_constraintTop_toBottomOf="@+id/category_label"
-        tools:layout_editor_absoluteX="0dp" />
+        android:maxLength="20" />
 
     <TextView
         android:id="@+id/textView2"
@@ -43,8 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_margin="10dp"
-        android:max="10"
-        android:min="1"
+        android:max="9"
         android:progress="1"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -60,7 +59,7 @@
         tools:layout_editor_absoluteX="10dp" />
 
     <com.divyanshu.colorseekbar.ColorSeekBar
-        android:id="@+id/colorSeekBar"
+        android:id="@+id/edit_category_color"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_margin="10dp"
@@ -69,15 +68,16 @@
         tools:layout_editor_absoluteX="16dp" />
 
     <Button
+        android:id="@+id/category_complete_button"
         android:layout_width="200dp"
         android:layout_height="60dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="60dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/colorSeekBar"
+        app:layout_constraintTop_toBottomOf="@+id/edit_category_color"
         android:background="@color/colorPrimaryLight"
         android:text="ГОТОВО!"
         android:textSize="30dp"

@@ -11,7 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="8dp">
-
     </com.anychart.AnyChartView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_category_button"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="30dp"
+        android:src="@drawable/icon_add"
+        android:scaleType="centerCrop"/>
 
 </FrameLayout>
