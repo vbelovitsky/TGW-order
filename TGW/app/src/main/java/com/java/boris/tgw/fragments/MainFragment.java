@@ -1,11 +1,10 @@
 package com.java.boris.tgw.fragments;
 
-import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import com.anychart.charts.Polar;
 import com.anychart.core.polar.series.Column;
 import com.anychart.enums.PolarSeriesType;
 import com.anychart.enums.ScaleTypes;
+import com.java.boris.tgw.CategoryActivity;
 import com.java.boris.tgw.R;
 
 import java.util.ArrayList;
@@ -71,16 +71,29 @@ public class MainFragment extends Fragment {
         anyChartView.setChart(polar);
 
         polar.setOnClickListener(new ListenersInterface.OnClickListener(new String[]{"x", "value", "color", "id"}) {
+
+            int counter = 0;
+
             @Override
             public void onClick(Event event) {
+
+
                 String x =  event.getData().get("x");
                 Integer value = Integer.parseInt(event.getData().get("value"));
                 event.getData().get("color");
                 Integer id = Integer.parseInt(event.getData().get("id"));
 
                 Toast.makeText(getActivity(), x + " " + value + " " + id, Toast.LENGTH_SHORT).show();
+
+                if((counter & 1) == 0) {
+                    Intent intent = new Intent(getActivity(), CategoryActivity.class);
+                    startActivity(intent);
+                }
+                counter++;
+
             }
         });
+
     }
 
     private class CustomDataEntry extends DataEntry {
