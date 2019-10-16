@@ -66,8 +66,8 @@ public class CategoryActivity extends AppCompatActivity {
                 // Валидация ввода
                 if (editCategoryName.length() == 0) {
                     editCategoryName.setError("Введите, пожалуйста, название!");
-                } else if (editCategoryName.getText().toString().contains("@")) {
-                    editCategoryName.setError("Недопустимый символ @");
+                } else if (editCategoryName.getText().toString().contains("@") || editCategoryName.getText().toString().contains("\n")) {
+                    editCategoryName.setError("Недопустимые символы");
                 } else {
                     //Добавление новой/измененной категории в бд
                     if (id == -1) {
