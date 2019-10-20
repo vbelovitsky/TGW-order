@@ -93,7 +93,7 @@ public class DiaryFragment extends Fragment {
             ((TextView)convertView.findViewById(R.id.goal_text)).setText(goal.goalName);
             ((TextView)convertView.findViewById(R.id.goal_category)).setText(goal.categoryName);
             ((CheckBox)convertView.findViewById(R.id.goal_completed)).setChecked(goal.isCompleted);
-            convertView.findViewById(R.id.goal_background).setBackgroundColor(goal.color);
+            convertView.findViewById(R.id.goal_category).setBackgroundColor(goal.color);
 
             return convertView;
         }
