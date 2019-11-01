@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.java.boris.tgw.fragments.MainFragment;
 
@@ -37,12 +38,23 @@ public class GoalActivity extends ListActivity {
 
     int selectedCategory = -2;
 
+    int id;
+    boolean wasCategoryChanged = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goal);
 
+        id = getIntent().getIntExtra("id", -1);
+        String name = getIntent().getStringExtra("name");
+
+        TextView label = findViewById(R.id.goal_label);
+        if(id != -1) label.setText("Измените цель:");
+
         editGoal = findViewById(R.id.edit_goal_text);
+        if(name != null && !name.equals("")) editGoal.setText(name);
+
         listView = getListView();
         Button createGoalButton = findViewById(R.id.goal_complete_button);
 
@@ -75,13 +87,19 @@ public class GoalActivity extends ListActivity {
                     editGoal.setError("Введите, пожалуйста, название!");
                 } else if (editGoal.getText().toString().contains("@") || editGoal.getText().toString().contains("\n")) {
                     editGoal.setError("Недопустимые символы");
-                } else if(selectedCategory < 0){
+                } else if(selectedCategory < 0 && id == -1){
 
                 } else {
                     contentValues.put(DBHelper.KEY_GOALS_TEXT, editGoal.getText().toString());
                     contentValues.put(DBHelper.KEY_GOALS_COMPLETED, 0);
-                    contentValues.put(DBHelper.KEY_GOALS_CATEGORY, categoryIdArray[selectedCategory]);
-                    database.insert(DBHelper.TABLE_GOALS, null, contentValues);
+                    if(id == -1 || wasCategoryChanged) contentValues.put(DBHelper.KEY_GOALS_CATEGORY, categoryIdArray[selectedCategory]);
+
+                    if(id == -1) {
+                        database.insert(DBHelper.TABLE_GOALS, null, contentValues);
+                    }
+                    else{
+                        database.update(DBHelper.TABLE_GOALS, contentValues, DBHelper.KEY_GOALS_ID + "=?", new String[]{Integer.toString(id)});
+                    }
                     dbHelper.close();
                     finish();
                 }
@@ -92,6 +110,7 @@ public class GoalActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectedCategory = position;
+                wasCategoryChanged = true;
             }
         });
 

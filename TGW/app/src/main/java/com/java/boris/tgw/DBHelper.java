@@ -40,7 +40,9 @@ public class DBHelper extends SQLiteOpenHelper {
             KEY_GOALS_ID + " integer primary key, " +
             KEY_GOALS_TEXT + " text, " +
             KEY_GOALS_COMPLETED + " integer, " +
-            KEY_GOALS_CATEGORY + " integer" + ")";
+            KEY_GOALS_CATEGORY + " integer, " +
+            "foreign key(" + KEY_GOALS_CATEGORY + ") REFERENCES " + TABLE_CATEGORY + "(" + KEY_ID + ")" +
+            ")";
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

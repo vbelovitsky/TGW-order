@@ -5,6 +5,7 @@
     android:id="@+id/diary_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:tag="diary_tag"
     tools:context=".fragments.DiaryFragment">
 
 
