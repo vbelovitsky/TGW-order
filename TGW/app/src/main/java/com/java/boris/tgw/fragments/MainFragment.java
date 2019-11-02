@@ -27,6 +27,7 @@ import com.anychart.enums.ScaleTypes;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.java.boris.tgw.CategoryActivity;
 import com.java.boris.tgw.DBHelper;
+import com.java.boris.tgw.HelpActivity;
 import com.java.boris.tgw.R;
 
 import java.util.ArrayList;
@@ -69,6 +70,16 @@ public class MainFragment extends Fragment {
                 }else{
                     Toast.makeText(getActivity(), "Может быть не более 10 категорий", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        // Обработчик нажатия на кнопку для вызова помощника
+        FloatingActionButton helperButton = getActivity().findViewById(R.id.helper_button);
+        helperButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), HelpActivity.class);
+                startActivity(intent);
             }
         });
     }

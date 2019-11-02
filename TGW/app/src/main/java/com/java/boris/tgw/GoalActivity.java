@@ -106,6 +106,19 @@ public class GoalActivity extends ListActivity {
             }
         });
 
+        if(id != -1){
+            Button deleteButton = findViewById(R.id.goal_delete_button);
+            deleteButton.setVisibility(View.VISIBLE);
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    database.delete(DBHelper.TABLE_GOALS, DBHelper.KEY_GOALS_ID + "=" + id, null);
+                    finish();
+                }
+            });
+
+        }
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

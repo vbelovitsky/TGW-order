@@ -16,10 +16,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String KEY_VALUE = "_value";
     public static final String KEY_COLOR = "_color";
 
-    private int[] categoryIds = {1, 2, 3, 4, 5};
-    private String[] categoryNames = {"Здоровье", "Учеба", "Отношения", "Работа", "Хобби"};
-    private int[] categoryValues = {5, 5, 5, 5, 5};
-    private String[] categoryColors = {"#89EE1E", "#1EEEEE", "#E53FF8", "#817A83", "#FFEB3B"};
+    private int[] categoryIds = {1, 2, 3, 4, 5, 6};
+    private String[] categoryNames = {"Любовь", "Благосостояние", "Хобби", "Друзья", "Работа", "Здоровье"};
+    private int[] categoryValues = {5, 5, 5, 5, 5, 5};
+    private String[] categoryColors = {"#E53FF8", "#1EEEEE", "#FFEB3B", "#FF8400", "#817A83", "#89EE1E"};
 
 
 

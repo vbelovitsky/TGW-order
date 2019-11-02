@@ -30,7 +30,7 @@
 
         android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="300dp"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/edit_goal_text">
     </ListView>
