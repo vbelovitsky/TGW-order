@@ -10,8 +10,13 @@
         android:id="@+id/any_chart_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="8dp">
-    </com.anychart.AnyChartView>
+        android:layout_marginTop="8dp" />
+
+    <ProgressBar
+        android:id="@+id/progress_polar"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_category_button"

@@ -122,8 +122,9 @@ public class MainFragment extends Fragment {
 
     private void setPolarChart(ArrayList<String> dataLines){
         AnyChartView anyChartView = getActivity().findViewById(R.id.any_chart_fragment);
-
+        anyChartView.setProgressBar(getActivity().findViewById(R.id.progress_polar));
         polar = AnyChart.polar();
+
 
         // Заполняем колесо информацией
         for(int i = 0; i < dataLines.size(); i++){

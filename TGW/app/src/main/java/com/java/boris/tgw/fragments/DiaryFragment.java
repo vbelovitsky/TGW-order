@@ -49,6 +49,7 @@ public class DiaryFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(R.string.menu_diary);
 
+        TextView isEmpty = getActivity().findViewById(R.id.diary_empty);
 
         goalListView = getActivity().findViewById(R.id.goals_list);
         FloatingActionButton addGoalButton = getActivity().findViewById(R.id.add_goal_button);
@@ -63,11 +64,12 @@ public class DiaryFragment extends Fragment {
             goalListArray.add(new Goal(Integer.parseInt(lineData[0]), lineData[1],
                     Integer.parseInt(lineData[2]), lineData[5], Integer.parseInt(lineData[4]), Color.parseColor(lineData[7]), Integer.parseInt(lineData[6])));
         }
+        if(goalListArray.size() != 0) isEmpty.setVisibility(View.INVISIBLE);
+        else isEmpty.setVisibility(View.VISIBLE);
 
         ArrayAdapter<Goal> adapter = new GoalAdapter(getActivity());
 
         goalListView.setAdapter(adapter);
-
 
         addGoalButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -9,15 +9,27 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.anychart.AnyChartView;
 import com.java.boris.tgw.R;
 
 public class StatisticsFragment extends Fragment {
+
+    AnyChartView statisticChart;
+    int currentChart = 0;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         getActivity().setTitle(R.string.menu_statistics);
+
+        statisticChart = getActivity().findViewById(R.id.statistics_chart);
+        Button prevButton = getActivity().findViewById(R.id.button_prev);
+        Button nextButton = getActivity().findViewById(R.id.button_next);
+
+
+
     }
 
     @Nullable

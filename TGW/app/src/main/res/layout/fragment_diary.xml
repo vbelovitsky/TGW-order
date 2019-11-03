@@ -8,6 +8,17 @@
     android:tag="diary_tag"
     tools:context=".fragments.DiaryFragment">
 
+    <TextView
+        android:id="@+id/diary_empty"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="Создайте первую цель!"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/goals_list"
+        app:layout_constraintTop_toBottomOf="@+id/goals_list"/>
 
     <ListView
         android:id="@+id/goals_list"
@@ -15,22 +26,23 @@
         android:layout_height="500dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="260dp"
+        android:paddingBottom="75dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/diary_label"
         app:layout_constraintVertical_bias="0.0"
-        tools:layout_editor_absoluteX="0dp"
-        android:paddingBottom="75dp"></ListView>
+        tools:layout_editor_absoluteX="0dp"></ListView>
 
     <TextView
         android:id="@+id/diary_label"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_margin="10dp"
+        android:background="@color/colorWhite"
         android:gravity="center"
         android:text="@string/diary_label"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/colorWhite"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_goal_button"

@@ -98,6 +98,7 @@ public class CategoryActivity extends AppCompatActivity {
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //dbHelper.dropStatistics(database);
                     database.delete(DBHelper.TABLE_CATEGORY, DBHelper.KEY_ID + "=" + id, null);
                     finishAffinity();
                     startActivity(new Intent(CategoryActivity.this, MainActivity.class));

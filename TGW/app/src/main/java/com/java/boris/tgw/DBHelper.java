@@ -29,6 +29,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String KEY_GOALS_COMPLETED = "_goalcompleted";
     public static final String KEY_GOALS_CATEGORY = "_category";
 
+    public static final String TABLE_STATISTICS = "statistics";
+    public static final String KEY_STATISTICS_ID = "_statisticsid";
+    public static final String KEY_STATISTICS_TIME = "_statisticstime";
+    public static final String KEY_STATISTICS_CATEGORIES = "_statisticscategories";
+    public static final String KEY_STATISTICS_VALUES = "_statisticscategories";
+
+
 
     public static final String CREATE_CATEGORY_TABLE = "create table " + TABLE_CATEGORY + "(" +
             KEY_ID + " integer primary key, " +
@@ -44,6 +51,12 @@ public class DBHelper extends SQLiteOpenHelper {
             "foreign key(" + KEY_GOALS_CATEGORY + ") REFERENCES " + TABLE_CATEGORY + "(" + KEY_ID + ")" +
             ")";
 
+    public static final String CREATE_STATISTICS_TABLE = "create table " + TABLE_STATISTICS + "(" +
+            KEY_STATISTICS_ID + " integer primary key, " +
+            KEY_STATISTICS_TIME + " text, " +
+            KEY_STATISTICS_CATEGORIES + " text, " +
+            KEY_STATISTICS_VALUES + " text" + ")";
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -52,6 +65,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_CATEGORY_TABLE);
         db.execSQL(CREATE_GOAL_TABLE);
+        db.execSQL(CREATE_STATISTICS_TABLE);
 
 
         ContentValues contentValues = new ContentValues();
@@ -70,7 +84,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("drop table if exists " + TABLE_CATEGORY);
         db.execSQL("drop table if exists " + TABLE_GOALS);
+        db.execSQL("drop table if exists " + TABLE_STATISTICS);
 
         onCreate(db);
+    }
+
+    public void dropStatistics(SQLiteDatabase db){
+        db.execSQL("drop table if exists " + TABLE_STATISTICS);
+        db.execSQL(CREATE_STATISTICS_TABLE);
     }
 }
