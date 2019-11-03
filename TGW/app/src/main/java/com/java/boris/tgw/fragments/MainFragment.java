@@ -67,6 +67,7 @@ public class MainFragment extends Fragment {
         addCategoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Категорий может быть не больше 10
                 if(categoryCount <= 10) {
                     Intent intent = new Intent(getActivity(), CategoryActivity.class);
                     intent.putExtra("id", -1);
@@ -93,6 +94,7 @@ public class MainFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
+    // Сохраняем данные для статистики
     private void updateStatistics(ArrayList<String> dataLines, SQLiteDatabase database){
 
         ContentValues contentValues = new ContentValues();
@@ -125,6 +127,7 @@ public class MainFragment extends Fragment {
     }
 
 
+    // Метод для превращения массива в строку с разделителем "!"
     private String joinArray(String[] array){
         StringBuilder stringBuilder = new StringBuilder();
         for(int i = 0; i < array.length; i++){
@@ -138,6 +141,7 @@ public class MainFragment extends Fragment {
         return stringBuilder.toString();
     }
 
+    // Метод для извлечения данных из бд
     private ArrayList<String> extractData(SQLiteDatabase database){
         ArrayList<String> dataLines = new ArrayList<>();
 
@@ -153,6 +157,7 @@ public class MainFragment extends Fragment {
         return  dataLines;
     }
 
+    // Проход по бд
     private void logCursor(Cursor cursor, ArrayList<String> _dataLines){
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -169,6 +174,7 @@ public class MainFragment extends Fragment {
         } else Log.d(LOG_TAG, "Cursor is null");
     }
 
+    // Установка графика
     private void setPolarChart(ArrayList<String> dataLines){
         AnyChartView anyChartView = getActivity().findViewById(R.id.any_chart_fragment);
         anyChartView.setProgressBar(getActivity().findViewById(R.id.progress_polar));

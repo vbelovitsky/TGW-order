@@ -44,6 +44,7 @@ public class CategoryActivity extends AppCompatActivity {
         Button completeButton = findViewById(R.id.category_complete_button);
         final Button deleteButton = findViewById(R.id.category_delete_button);
 
+        // Если id = -1, то происходит создание новой категории, иначе - изменение существующей
         id = getIntent().getIntExtra("id", -1);
 
         categoryLabel.setText(id == -1 ? "Создайте категорию:" : "Измените категорию:");
@@ -94,6 +95,7 @@ public class CategoryActivity extends AppCompatActivity {
             }
         });
 
+        // Если работаем со старой категорией, то ее можно удалить
         if(id != -1) {
             deleteButton.setVisibility(View.VISIBLE);
             deleteButton.setOnClickListener(new View.OnClickListener() {

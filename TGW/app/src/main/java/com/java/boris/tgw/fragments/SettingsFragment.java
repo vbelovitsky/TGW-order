@@ -23,6 +23,7 @@ public class SettingsFragment extends Fragment {
 
         Button dropButton = getActivity().findViewById(R.id.drop_db_button);
 
+        // Нажатие на кнопку - очистка бд
         dropButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

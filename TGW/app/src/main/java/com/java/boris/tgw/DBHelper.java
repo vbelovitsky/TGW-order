@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+// Класс для работы с базой данных
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final int DATABASE_VERSION = 1;
@@ -82,7 +83,6 @@ public class DBHelper extends SQLiteOpenHelper {
             contentValues.put(KEY_COLOR, categoryColors[i]);
             db.insert(TABLE_CATEGORY, null, contentValues);
         }
-
     }
 
     @Override
@@ -96,6 +96,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // Метод для сброса статистики
     public void dropStatistics(SQLiteDatabase db){
         db.execSQL("drop table if exists " + TABLE_STATISTICS);
         db.execSQL(CREATE_STATISTICS_TABLE);
@@ -104,6 +105,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    // Заполняем статистику по умолчанию
     private void fillStatistics(SQLiteDatabase db){
         ContentValues contentValues = new ContentValues();
         Date date = new Date();

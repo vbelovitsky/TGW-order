@@ -25,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.java.boris.tgw.DBHelper;
@@ -134,6 +135,7 @@ public class DiaryFragment extends Fragment {
     }
 // endregion
 
+    // Класс для хранения всех составляющих цели
     private class Goal {
         public final int goalId;
         public final String goalName;
@@ -154,6 +156,7 @@ public class DiaryFragment extends Fragment {
         }
     }
 
+    // Адаптер для списка целей
     private class GoalAdapter extends ArrayAdapter<Goal> {
 
         GoalAdapter(Context context) {
@@ -188,6 +191,7 @@ public class DiaryFragment extends Fragment {
             holder.isCompleted.setTag(new int[]{goal.goalId, goal.categoryId});
             holder.goalName.setTag(new String[]{String.valueOf(goal.goalId), goal.goalName});
 
+            // Нажатие на чекбокс цели
             holder.isCompleted.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -200,14 +204,21 @@ public class DiaryFragment extends Fragment {
                     ContentValues goalValues = new ContentValues();
                     ContentValues categoryValues = new ContentValues();
 
+                    // Если цель была не выполнена, то значение категории увеличивается на 1
                     if (holder.isCompleted.isChecked()) {
                         goalValues.put(DBHelper.KEY_GOALS_COMPLETED, 1);
                         database.update(DBHelper.TABLE_GOALS, goalValues, DBHelper.KEY_GOALS_ID + "=?", new String[]{Integer.toString(ids[0])});
 
 
                         categoryValues.put(DBHelper.KEY_VALUE, goalListArray.get(position).categoryValue >= 10 ? 10 : goalListArray.get(position).categoryValue + 1);
+                        // Поздавление пользователя, если значение категории стало равным 10
+                        if(goalListArray.get(position).categoryValue + 1 >= 10){
+                            Toast.makeText(getActivity(), "Ура! Вы достигли совершенства в категории " + goalListArray.get(position).categoryName + "!", Toast.LENGTH_SHORT).show();
+                        }
                         database.update(DBHelper.TABLE_CATEGORY, categoryValues, DBHelper.KEY_ID + "=?", new String[]{Integer.toString(ids[1])});
-                    } else {
+                    }
+                    // иначе - уменьшается на 1
+                    else {
                         goalValues.put(DBHelper.KEY_GOALS_COMPLETED, 0);
                         database.update(DBHelper.TABLE_GOALS, goalValues, DBHelper.KEY_GOALS_ID + "=?", new String[]{Integer.toString(ids[0])});
 

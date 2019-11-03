@@ -25,6 +25,7 @@ import java.util.ArrayList;
 public class GoalActivity extends ListActivity {
 
     EditText editGoal;
+    // Список категорий для выбора
     ListView listView;
 
     String[] categoryList;
@@ -46,15 +47,15 @@ public class GoalActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goal);
 
+        // Если id = -1 то создается новая цель, иначе - изменение старой
         id = getIntent().getIntExtra("id", -1);
         String name = getIntent().getStringExtra("name");
 
+        // Инициализация элементов интерфейса
         TextView label = findViewById(R.id.goal_label);
         if(id != -1) label.setText("Измените цель:");
-
         editGoal = findViewById(R.id.edit_goal_text);
         if(name != null && !name.equals("")) editGoal.setText(name);
-
         listView = getListView();
         Button createGoalButton = findViewById(R.id.goal_complete_button);
 
@@ -63,6 +64,7 @@ public class GoalActivity extends ListActivity {
         dbHelper = new DBHelper(this);
         database = dbHelper.getWritableDatabase();
 
+        // Достаем категории из бд
         ArrayList<String> dataLines = extractData(database);
 
         categoryList = new String[dataLines.size()];
@@ -106,6 +108,7 @@ public class GoalActivity extends ListActivity {
             }
         });
 
+        // Если работаем со старой целью, то ее можно удалить
         if(id != -1){
             Button deleteButton = findViewById(R.id.goal_delete_button);
             deleteButton.setVisibility(View.VISIBLE);

@@ -61,6 +61,8 @@ public class HelpActivity extends AppCompatActivity {
 
         int moda = findModa(categoryHelps);
         int mediana = categoryHelps.get(categoryHelps.size()/2).value;
+
+        // Если мода найдена, то значение нормы равно моде, иначе медиане
         int norma = moda != -1? moda : mediana;
 
         // Проверяем отхождение от нормы от 5 до 0
@@ -92,7 +94,12 @@ public class HelpActivity extends AppCompatActivity {
                 advices.add(helpData[abnormal.get(i).id - 1][random.nextInt(4)]);
             }
         }
-        if (advices.size() == 0) advices.add("Подумайте, как исправить аспекты выше!");
+
+        // Если плохие категории не относятся к базовым, то отображаюся советы по умолчанию
+        if (advices.size() == 0){
+            advices.add("Подумайте, как исправить аспекты выше");
+            advices.add("Создайте для себя цели в дневнике!");
+        }
 
         TextView categoryLabel = findViewById(R.id.help_category_label);
         categoryLabel.setText(label);
@@ -112,7 +119,7 @@ public class HelpActivity extends AppCompatActivity {
     }
 
 
-
+    // Метод для нахождения моды
     private int findModa(ArrayList<CategoryHelp> categoryHelps){
         // Массив повторяющихся чисел
         int [] duplicates = new int[11];
@@ -127,7 +134,7 @@ public class HelpActivity extends AppCompatActivity {
         // Нет повторяющихся чисел
         if(maxCount <= 1) return -1;
 
-        // Находим наибольшую моду
+        // Находим наибольшое число из частовстречающихся (мода)
         for(int i = duplicates.length -1; i >=0; i--){
             if(duplicates[i] == maxCount) return i;
         }
@@ -135,6 +142,7 @@ public class HelpActivity extends AppCompatActivity {
         return -1;
     }
 
+    // Сортировка массива
     private void sortHelpArray(ArrayList<CategoryHelp> categoryHelps){
         Collections.sort(categoryHelps, new Comparator<CategoryHelp>() {
             @Override

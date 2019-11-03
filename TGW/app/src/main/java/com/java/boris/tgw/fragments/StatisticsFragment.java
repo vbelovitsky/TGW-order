@@ -36,7 +36,6 @@ import java.util.List;
 public class StatisticsFragment extends Fragment {
 
     AnyChartView statisticChart;
-    int currentChart = 0;
 
     DBHelper dbHelper;
     ArrayList<String> statisticsData;
@@ -48,15 +47,12 @@ public class StatisticsFragment extends Fragment {
         getActivity().setTitle(R.string.menu_statistics);
 
         statisticChart = getActivity().findViewById(R.id.statistics_chart);
-        Button prevButton = getActivity().findViewById(R.id.button_prev);
-        Button nextButton = getActivity().findViewById(R.id.button_next);
 
         dbHelper = new DBHelper(getActivity());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         statisticsData = extractData(database);
 
         setLineChart(statisticChart);
-
     }
 
     @Nullable
@@ -65,6 +61,7 @@ public class StatisticsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_statistics, container, false);
     }
 
+    // Метод для извлечения данных для статистики
     private ArrayList<String> extractData(SQLiteDatabase database){
         ArrayList<String> dataLines = new ArrayList<>();
 
@@ -97,8 +94,10 @@ public class StatisticsFragment extends Fragment {
     }
 
 
-
+    // Установка графика
     private void setLineChart(AnyChartView statisticChart){
+        statisticChart.setProgressBar(getActivity().findViewById(R.id.statistics_progress));
+
         Cartesian cartesian = AnyChart.line();
         cartesian.animation(true);
         cartesian.padding(10d, 20d, 5d, 20d);
@@ -115,7 +114,7 @@ public class StatisticsFragment extends Fragment {
 
 
         String[] categories = statisticsData.get(statisticsData.size() - 1).split("@")[2].split("!");
-        String[] colors = statisticsData.get(statisticsData.size() - 1).split("@")[3].split("!");
+        String[] colors = statisticsData.get(statisticsData.size() - 1).split("@")[4].split("!");
         for(int i = 0; i < statisticsData.size(); i++){
             String[] lineData = statisticsData.get(i).split("@");
 
@@ -141,6 +140,7 @@ public class StatisticsFragment extends Fragment {
                 .anchor(Anchor.LEFT_CENTER)
                 .offsetX(5d)
                 .offsetY(5d);
+        series.color(colors[0]);
         for(int i = 1; i < categories.length; i++){
             seriesMapping = set.mapAs("{ x: 'x', value: 'value" + (i+1) + "' }");
             series = cartesian.line(seriesMapping);
@@ -154,6 +154,7 @@ public class StatisticsFragment extends Fragment {
                     .anchor(Anchor.LEFT_CENTER)
                     .offsetX(5d)
                     .offsetY(5d);
+            series.color(colors[i]);
         }
 
 
