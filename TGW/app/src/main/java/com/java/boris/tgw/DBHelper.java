@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final int DATABASE_VERSION = 1;
@@ -33,7 +36,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String KEY_STATISTICS_ID = "_statisticsid";
     public static final String KEY_STATISTICS_TIME = "_statisticstime";
     public static final String KEY_STATISTICS_CATEGORIES = "_statisticscategories";
-    public static final String KEY_STATISTICS_VALUES = "_statisticscategories";
+    public static final String KEY_STATISTICS_VALUES = "_statisticsvalues";
+    public static final String KEY_STATISTICS_COLORS = "_statisticscolors";
 
 
 
@@ -55,7 +59,8 @@ public class DBHelper extends SQLiteOpenHelper {
             KEY_STATISTICS_ID + " integer primary key, " +
             KEY_STATISTICS_TIME + " text, " +
             KEY_STATISTICS_CATEGORIES + " text, " +
-            KEY_STATISTICS_VALUES + " text" + ")";
+            KEY_STATISTICS_VALUES + " text, " +
+            KEY_STATISTICS_COLORS + " text" + ")";
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -86,11 +91,54 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists " + TABLE_GOALS);
         db.execSQL("drop table if exists " + TABLE_STATISTICS);
 
+        fillStatistics(db);
+
         onCreate(db);
     }
 
     public void dropStatistics(SQLiteDatabase db){
         db.execSQL("drop table if exists " + TABLE_STATISTICS);
         db.execSQL(CREATE_STATISTICS_TABLE);
+
+        fillStatistics(db);
+
+    }
+
+    private void fillStatistics(SQLiteDatabase db){
+        ContentValues contentValues = new ContentValues();
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm/ss");
+        contentValues.put(DBHelper.KEY_STATISTICS_TIME, simpleDateFormat.format(date));
+        contentValues.put(DBHelper.KEY_STATISTICS_CATEGORIES, joinArray(categoryNames));
+        contentValues.put(DBHelper.KEY_STATISTICS_VALUES, joinArray(categoryValues));
+        contentValues.put(DBHelper.KEY_STATISTICS_COLORS, joinArray(categoryColors));
+
+        db.insert(DBHelper.TABLE_STATISTICS, null, contentValues);
+    }
+
+    private String joinArray(String[] array){
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < array.length; i++){
+            if(i != array.length - 1){
+                stringBuilder.append(array[i]).append("!");
+            }
+            else{
+                stringBuilder.append(array[i]);
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    private String joinArray(int[] array){
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < array.length; i++){
+            if(i != array.length - 1){
+                stringBuilder.append(array[i]).append("!");
+            }
+            else{
+                stringBuilder.append(array[i]);
+            }
+        }
+        return stringBuilder.toString();
     }
 }

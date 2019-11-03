@@ -1,5 +1,6 @@
 package com.java.boris.tgw.fragments;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -30,7 +31,10 @@ import com.java.boris.tgw.DBHelper;
 import com.java.boris.tgw.HelpActivity;
 import com.java.boris.tgw.R;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -40,7 +44,6 @@ public class MainFragment extends Fragment {
     private DBHelper dbHelper;
     private String LOG_TAG = "dbLog";
     private int categoryCount = 5;
-    private boolean isReturnedFromCategories = false;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -57,6 +60,8 @@ public class MainFragment extends Fragment {
         categoryCount = dataLines.size();
         setPolarChart(dataLines);
 
+        updateStatistics(dataLines, database);
+
         // Обработчик нажатия на кнопку добавления категории
         FloatingActionButton addCategoryButton = getActivity().findViewById(R.id.add_category_button);
         addCategoryButton.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +70,6 @@ public class MainFragment extends Fragment {
                 if(categoryCount <= 10) {
                     Intent intent = new Intent(getActivity(), CategoryActivity.class);
                     intent.putExtra("id", -1);
-                    isReturnedFromCategories = true;
                     startActivity(intent);
                 }else{
                     Toast.makeText(getActivity(), "Может быть не более 10 категорий", Toast.LENGTH_SHORT).show();
@@ -89,6 +93,51 @@ public class MainFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
+    private void updateStatistics(ArrayList<String> dataLines, SQLiteDatabase database){
+
+        ContentValues contentValues = new ContentValues();
+
+        String[] categories = new String[dataLines.size()];
+        String[] values = new String[dataLines.size()];
+        String[] colors = new String[dataLines.size()];
+        for(int i = 0; i < dataLines.size(); i++){
+            String[] dataLine = dataLines.get(i).split("@");
+            categories[i] = dataLine[1];
+            values[i] = dataLine[2];
+            colors[i] = dataLine[3];
+        }
+
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm/ss");
+        contentValues.put(DBHelper.KEY_STATISTICS_TIME, simpleDateFormat.format(date));
+        contentValues.put(DBHelper.KEY_STATISTICS_CATEGORIES, joinArray(categories));
+        contentValues.put(DBHelper.KEY_STATISTICS_VALUES, joinArray(values));
+        contentValues.put(DBHelper.KEY_STATISTICS_COLORS, joinArray(colors));
+
+        System.out.println(simpleDateFormat.format(date) );
+        System.out.println(joinArray(categories));
+        System.out.println(joinArray(values));
+        System.out.println(joinArray(colors));
+
+
+        database.insert(DBHelper.TABLE_STATISTICS, null, contentValues);
+        dbHelper.close();
+    }
+
+
+    private String joinArray(String[] array){
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < array.length; i++){
+            if(i != array.length - 1){
+                stringBuilder.append(array[i]).append("!");
+            }
+            else{
+                stringBuilder.append(array[i]);
+            }
+        }
+        return stringBuilder.toString();
+    }
+
     private ArrayList<String> extractData(SQLiteDatabase database){
         ArrayList<String> dataLines = new ArrayList<>();
 
@@ -99,7 +148,7 @@ public class MainFragment extends Fragment {
         logCursor(cursor, dataLines);
 
         cursor.close();
-        dbHelper.close();
+//        dbHelper.close();
 
         return  dataLines;
     }
@@ -159,7 +208,6 @@ public class MainFragment extends Fragment {
                     intent.putExtra("id", id);
                     intent.putExtra("xName", x);
                     intent.putExtra("value", value);
-                    isReturnedFromCategories = true;
                     startActivity(intent);
                 }
                 isAble = !isAble;

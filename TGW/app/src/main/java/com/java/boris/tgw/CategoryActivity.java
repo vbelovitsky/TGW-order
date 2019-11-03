@@ -66,7 +66,7 @@ public class CategoryActivity extends AppCompatActivity {
                 // Валидация ввода
                 if (editCategoryName.length() == 0) {
                     editCategoryName.setError("Введите, пожалуйста, название!");
-                } else if (editCategoryName.getText().toString().contains("@") || editCategoryName.getText().toString().contains("\n")) {
+                } else if (editCategoryName.getText().toString().contains("@") || editCategoryName.getText().toString().contains("\n") || editCategoryName.getText().toString().contains("!")) {
                     editCategoryName.setError("Недопустимые символы");
                 } else {
                     //Добавление новой/измененной категории в бд
@@ -75,6 +75,7 @@ public class CategoryActivity extends AppCompatActivity {
                         contentValues.put(DBHelper.KEY_VALUE, editCategoryValue.getProgress() + 1);
                         contentValues.put(DBHelper.KEY_COLOR, String.format("#%06X", (0xFFFFFF & editCategoryColor.getColor())));
 
+                        dbHelper.dropStatistics(database);
                         database.insert(DBHelper.TABLE_CATEGORY, null, contentValues);
                         finishAffinity();
                         startActivity(new Intent(CategoryActivity.this, MainActivity.class));
@@ -98,7 +99,7 @@ public class CategoryActivity extends AppCompatActivity {
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //dbHelper.dropStatistics(database);
+                    dbHelper.dropStatistics(database);
                     database.delete(DBHelper.TABLE_CATEGORY, DBHelper.KEY_ID + "=" + id, null);
                     finishAffinity();
                     startActivity(new Intent(CategoryActivity.this, MainActivity.class));
