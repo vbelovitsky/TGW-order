@@ -29,13 +29,23 @@
         android:scaleType="centerCrop"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/send_button"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="30dp"
+        android:src="@drawable/icon_help"
+        android:scaleType="centerCrop"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/helper_button"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_gravity="top|end"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="30dp"
-        android:src="@drawable/icon_help"
+        android:src="@drawable/icon_smile"
         android:scaleType="centerCrop"/>
 
 </FrameLayout>

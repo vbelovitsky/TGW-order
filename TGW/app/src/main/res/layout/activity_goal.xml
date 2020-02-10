@@ -23,7 +23,6 @@
         android:layout_margin="10dp"
         android:layout_marginTop="88dp"
         android:hint="Введите текст цели"
-        android:maxLength="20"
         app:layout_constraintTop_toBottomOf="@+id/goal_label" />
 
     <ListView

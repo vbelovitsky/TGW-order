@@ -2,16 +2,21 @@ package com.java.boris.tgw;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -28,6 +33,10 @@ public class HelpActivity extends AppCompatActivity {
     String LOG_TAG = "db Log: ";
 
     ArrayList<String> data;
+
+    boolean wasAdvicesEmpty = false;
+    ArrayList<CategoryHelp> abnormal;
+    ArrayList<String> advices;
 
     // Текст советов для улучшения жизни по базовым аспектам
     String[][] helpData = new String[][] {
@@ -66,7 +75,7 @@ public class HelpActivity extends AppCompatActivity {
         int norma = moda != -1? moda : mediana;
 
         // Проверяем отхождение от нормы от 5 до 0
-        ArrayList<CategoryHelp> abnormal = new ArrayList<>();
+        abnormal = new ArrayList<>();
         String label = "Улучшайте эти аспекты:";
         for(int i = 5; i >= 0; i--){
             for(int j = 0; j < categoryHelps.size(); j++){
@@ -87,7 +96,7 @@ public class HelpActivity extends AppCompatActivity {
         }
 
         // Массив советов для улучшения жизни
-        ArrayList<String> advices = new ArrayList<>();
+        advices = new ArrayList<>();
         for(int i = 0; i < abnormal.size(); i++){
             // Если категория относится к базовым тогда для нее генерируется совет
             if(abnormal.get(i).id <= helpData.length){
@@ -97,6 +106,7 @@ public class HelpActivity extends AppCompatActivity {
 
         // Если плохие категории не относятся к базовым, то отображаюся советы по умолчанию
         if (advices.size() == 0){
+            wasAdvicesEmpty = true;
             advices.add("Подумайте, как исправить аспекты выше");
             advices.add("Создайте для себя цели в дневнике!");
         }
@@ -115,6 +125,28 @@ public class HelpActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, advices);
         adviceList.setAdapter(adviceAdapter);
 
+        if(!wasAdvicesEmpty) {
+            final FloatingActionButton addAdvicesButton = findViewById(R.id.add_advices_button);
+            addAdvicesButton.show();
+            addAdvicesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DBHelper dbHelper = new DBHelper(HelpActivity.this);
+                    SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+                    for(int i = 0; i < advices.size(); i++){
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(DBHelper.KEY_GOALS_TEXT, advices.get(i));
+                        contentValues.put(DBHelper.KEY_GOALS_COMPLETED, 0);
+                        contentValues.put(DBHelper.KEY_GOALS_CATEGORY, abnormal.get(i).id);
+                        database.insert(DBHelper.TABLE_GOALS, null, contentValues);
+                    }
+                    Toast.makeText(HelpActivity.this, "Цели добавлены в дневник", Toast.LENGTH_SHORT).show();
+                    addAdvicesButton.hide();
+                    dbHelper.close();
+                }
+            });
+        }
 
     }
 

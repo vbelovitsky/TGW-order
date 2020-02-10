@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -188,6 +189,11 @@ public class DiaryFragment extends Fragment {
             holder.isCompleted.setChecked(goal.isCompleted != 0);
             holder.categoryName.setBackgroundColor(goal.color);
 
+            // Перечеркиваем текст цели и категории если цель выполнена
+            if(goal.isCompleted != 0){
+                holder.goalName.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            }
+
             holder.isCompleted.setTag(new int[]{goal.goalId, goal.categoryId});
             holder.goalName.setTag(new String[]{String.valueOf(goal.goalId), goal.goalName});
 
@@ -216,6 +222,8 @@ public class DiaryFragment extends Fragment {
                             Toast.makeText(getActivity(), "Ура! Вы достигли совершенства в категории " + goalListArray.get(position).categoryName + "!", Toast.LENGTH_SHORT).show();
                         }
                         database.update(DBHelper.TABLE_CATEGORY, categoryValues, DBHelper.KEY_ID + "=?", new String[]{Integer.toString(ids[1])});
+
+                        holder.goalName.setPaintFlags(holder.goalName.getPaintFlags() |Paint.STRIKE_THRU_TEXT_FLAG);
                     }
                     // иначе - уменьшается на 1
                     else {
@@ -224,13 +232,29 @@ public class DiaryFragment extends Fragment {
 
                         categoryValues.put(DBHelper.KEY_VALUE, goalListArray.get(position).categoryValue - 1);
                         database.update(DBHelper.TABLE_CATEGORY, categoryValues, DBHelper.KEY_ID + "=?", new String[]{Integer.toString(ids[1])});
+
+                        holder.goalName.setPaintFlags(holder.goalName.getPaintFlags()&(~Paint.STRIKE_THRU_TEXT_FLAG));
                     }
 
                     dbHelper.close();
                 }
             });
 
+            // Нажатие на название цели отправляет на страницу редактирования
             holder.goalName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String[] data = (String[]) holder.goalName.getTag();
+                    Intent intent = new Intent(getActivity(), GoalActivity.class);
+                    intent.putExtra("id", Integer.parseInt(data[0]));
+                    intent.putExtra("name", data[1]);
+                    startActivity(intent);
+                    refresh = !refresh;
+                }
+            });
+
+            // Нажатие на название категории также отправляет на страницу редактирования
+            holder.categoryName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String[] data = (String[]) holder.goalName.getTag();

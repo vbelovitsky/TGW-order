@@ -30,6 +30,7 @@ import com.java.boris.tgw.CategoryActivity;
 import com.java.boris.tgw.DBHelper;
 import com.java.boris.tgw.HelpActivity;
 import com.java.boris.tgw.R;
+import com.java.boris.tgw.SendActivity;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -45,6 +46,8 @@ public class MainFragment extends Fragment {
     private String LOG_TAG = "dbLog";
     private int categoryCount = 5;
 
+    private boolean allTens = false;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -59,6 +62,8 @@ public class MainFragment extends Fragment {
         ArrayList<String> dataLines = extractData(database);
         categoryCount = dataLines.size();
         setPolarChart(dataLines);
+
+        allTens = checkAllTens(dataLines);
 
         updateStatistics(dataLines, database);
 
@@ -83,7 +88,22 @@ public class MainFragment extends Fragment {
         helperButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), HelpActivity.class);
+                // Если не все 10, то отображаются советы опекуна
+                if(!allTens) {
+                    Intent intent = new Intent(getActivity(), HelpActivity.class);
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(getActivity(), "Поздравляем! Вы достигли совершенства!", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        FloatingActionButton sendButton = getActivity().findViewById(R.id.send_button);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SendActivity.class);
                 startActivity(intent);
             }
         });
@@ -92,6 +112,15 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_main, container, false);
+    }
+
+    // Проверка на все 10
+    private boolean checkAllTens(ArrayList<String> dataLines){
+        for(int i = 0; i < dataLines.size(); i++){
+            String[] line = dataLines.get(i).split("@");
+            if(!(Integer.parseInt(line[2]) >=10)) return false;
+        }
+        return true;
     }
 
     // Сохраняем данные для статистики
